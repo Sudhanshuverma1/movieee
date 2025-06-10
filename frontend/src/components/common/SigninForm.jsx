@@ -36,6 +36,8 @@ const SigninForm = ({ switchAuthState }) => {
       setIsLoginRequest(false);
 
       if (response) {
+       // 🛠 Save token to localStorage
+        localStorage.setItem("actkn", response.token);
         signinForm.resetForm();
         dispatch(setUser(response));
         dispatch(setAuthModalOpen(false));
