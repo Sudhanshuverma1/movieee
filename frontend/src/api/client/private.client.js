@@ -30,7 +30,8 @@ privateClient.interceptors.response.use((response) => {
       // Optionally redirect to login
       // window.location.href = "/login";
   }
-  throw err.response.data;
+  throw err?.response?.data || { message: "Something went wrong!" };
+
 });
 
 export default privateClient;
