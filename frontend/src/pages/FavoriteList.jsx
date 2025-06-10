@@ -13,7 +13,6 @@ import { removeFavorite } from "../redux/features/userSlice";
 
 const FavoriteItem = ({ media, onRemoved }) => {
   const dispatch = useDispatch();
-
   const [onRequest, setOnRequest] = useState(false);
 
   const onRemove = async () => {
@@ -21,7 +20,6 @@ const FavoriteItem = ({ media, onRemoved }) => {
     setOnRequest(true);
     const { response, err } = await favoriteApi.remove({ favoriteId: media.id });
     setOnRequest(false);
-
     if (err) toast.error(err.message);
     if (response) {
       toast.success("Remove favorite success");
@@ -51,7 +49,6 @@ const FavoriteList = () => {
   const [filteredMedias, setFilteredMedias] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
-
   const dispatch = useDispatch();
 
   const skip = 8;
@@ -61,15 +58,15 @@ const FavoriteList = () => {
       dispatch(setGlobalLoading(true));
       const { response, err } = await favoriteApi.getList();
       dispatch(setGlobalLoading(false));
-
+      
       if (err) toast.error(err.message);
       if (response) {
-        setCount(response.length);
-        setMedias([...response]);
-        setFilteredMedias([...response].splice(0, skip));
+        const favoritesList = Array.isArray(response) ? response : []; // Add safety check
+        setCount(favoritesList.length);
+        setMedias([...favoritesList]);
+        setFilteredMedias([...favoritesList].splice(0, skip));
       }
     };
-
     getFavorites();
   }, []);
 
@@ -89,11 +86,11 @@ const FavoriteList = () => {
     <Box sx={{ ...uiConfigs.style.mainContent }}>
       <Container header={`Your favorites (${count})`}>
         <Grid container spacing={1} sx={{ marginRight: "-8px!important" }}>
-          {filteredMedias.map((media, index) => (
+          {filteredMedias?.map((media, index) => (
             <Grid item xs={6} sm={4} md={3} key={index}>
               <FavoriteItem media={media} onRemoved={onRemoved} />
             </Grid>
-          ))}
+          )) || []}
         </Grid>
         {filteredMedias.length < medias.length && (
           <Button onClick={onLoadMore}>load more</Button>
