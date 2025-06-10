@@ -24,6 +24,12 @@ privateClient.interceptors.response.use((response) => {
   if (response && response.data) return response.data;
   return response;
 }, (err) => {
+  if (err.response?.status === 401) {
+      // Token might be expired or invalid
+      localStorage.removeItem("actkn");
+      // Optionally redirect to login
+      // window.location.href = "/login";
+  }
   throw err.response.data;
 });
 
