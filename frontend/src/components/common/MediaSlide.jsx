@@ -15,21 +15,21 @@ const MediaSlide = ({ mediaType, mediaCategory }) => {
         mediaCategory,
         page: 1
       });
-
-      if (response) setMedias(response.results);
+      
+      if (response) setMedias(response.results || []); // Add fallback
       if (err) toast.error(err.message);
     };
-
+    
     getMedias();
   }, [mediaType, mediaCategory]);
 
   return (
     <AutoSwiper>
-      {medias.map((media, index) => (
+      {medias?.map((media, index) => (
         <SwiperSlide key={index}>
           <MediaItem media={media} mediaType={mediaType} />
         </SwiperSlide>
-      ))}
+      )) || []}
     </AutoSwiper>
   );
 };
