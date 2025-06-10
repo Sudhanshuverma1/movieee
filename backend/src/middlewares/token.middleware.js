@@ -8,15 +8,12 @@ const tokenDecode = (req) => {
 
     if (bearerHeader) {
       const token = bearerHeader.split(" ")[1];
-
-      return jsonwebtoken.verify(
-        token,
-        process.env.TOKEN_SECRET
-      );
+      return jsonwebtoken.verify(token, process.env.TOKEN_SECRET);
     }
 
     return false;
-  } catch {
+  } catch (err) {
+    console.log("❌ Token decode failed:", err.message);
     return false;
   }
 };
@@ -26,7 +23,8 @@ const auth = async (req, res, next) => {
 
   if (!tokenDecoded) return responseHandler.unauthorize(res);
 
-  const user = await userModel.findById(tokenDecoded.data);
+  // 👇 Fix here (use 'id' instead of 'data' if that's how you encoded)
+  const user = await userModel.findById(tokenDecoded.id);
 
   if (!user) return responseHandler.unauthorize(res);
 
