@@ -18,6 +18,11 @@ app.use(cookieParser());
 
 app.use("/api/v1", routes);
 
+// ✅ Root route to avoid 404 on /
+app.get("/", (req, res) => {
+  res.send("🎬 TMDB Movie Backend is Running!");
+});
+
 const port = process.env.PORT || 5000;
 
 const server = http.createServer(app);
