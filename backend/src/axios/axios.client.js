@@ -1,17 +1,29 @@
 import axios from "axios";
+import queryString from "query-string";
 
-const get = async (url) => {
-  const token = localStorage.getItem("actkn"); // Make sure this matches your localStorage key
+const axiosClient = axios.create({
+  baseURL: process.env.TMDB_BASE_URL, // https://api.themoviedb.org/3
+  paramsSerializer: {
+    encode: params => queryString.stringify(params)
+  }
+});
 
-  const response = await axios.get(url, {
-    headers: {
-      Accept: "application/json",
-      "Accept-Encoding": "identity",
-      Authorization: `Bearer ${token}` // ✅ Add JWT token here
-    }
-  });
+// ✅ Automatically attach TMDB API key
+axiosClient.interceptors.request.use((config) => {
+  config.params = {
+    ...config.params,
+    api_key: process.env.TMDB_KEY
+  };
+  return config;
+}, (error) => Promise.reject(error));
 
-  return response.data;
-};
+// ✅ Response handling
+axiosClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    console.error("❌ TMDB API Error:", error.response?.data || error.message);
+    return Promise.reject(error.response?.data || { message: "TMDB API error" });
+  }
+);
 
-export default { get };
+export default axiosClient;
