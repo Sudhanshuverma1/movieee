@@ -13,7 +13,10 @@ const getList = async (req, res) => {
     const { page } = req.query;
     const { mediaType, mediaCategory } = req.params;
 
-    const response = await axios.get(`${TMDB_BASE_URL}/${mediaType}/${mediaCategory}`, {
+    const fullUrl = `${TMDB_BASE_URL}/${mediaType}/${mediaCategory}`;
+    console.log("📡 Hitting TMDB URL:", fullUrl);
+
+    const response = await axios.get(fullUrl, {
       params: {
         api_key: TMDB_KEY,
         page
@@ -22,10 +25,13 @@ const getList = async (req, res) => {
 
     return responseHandler.ok(res, response.data);
   } catch (err) {
-    console.error("🔥 [getList] TMDB API Error:", err.response?.data || err.message);
+    console.error("🔥 FULL ERROR:", err); // full object
+    console.error("🔥 RESPONSE:", err.response?.data);
+    console.error("🔥 MESSAGE:", err.message);
     responseHandler.error(res);
   }
 };
+
 
 const getGenres = async (req, res) => {
   try {
