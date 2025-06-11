@@ -1,4 +1,7 @@
 import express from "express";
+import dotenv from "dotenv";      // ✅ Explicitly import dotenv
+dotenv.config();                  // ✅ Load .env variables
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import http from "http";
