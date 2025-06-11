@@ -6,28 +6,29 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import http from "http";
 import mongoose from "mongoose";
-import "dotenv/config";
-import routes from "./src/routes/index.js";
+import routes from "./src/routes/index.js";  // ✅ Your routes
 
 const app = express();
 
-// Add this line to fix the Mongoose deprecation warning
+// Fix the Mongoose deprecation warning
 mongoose.set('strictQuery', false);
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Routes
 app.use("/api/v1", routes);
 
-// ✅ Root route to avoid 404 on /
+// ✅ Root route to test deployment
 app.get("/", (req, res) => {
   res.send("🎬 TMDB Movie Backend is Running!");
 });
 
+// Start Server
 const port = process.env.PORT || 5000;
-
 const server = http.createServer(app);
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
@@ -39,5 +40,3 @@ mongoose.connect(process.env.MONGODB_URL).then(() => {
   console.log({ err });
   process.exit(1);
 });
-
-//test
